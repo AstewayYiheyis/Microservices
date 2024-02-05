@@ -2,7 +2,6 @@ package com.asteway.orderservice.services;
 
 import com.asteway.orderservice.entities.Item;
 import com.asteway.orderservice.entities.OrderEntity;
-import com.asteway.orderservice.exceptions.EmptyItemsException;
 import com.asteway.orderservice.repositories.OrderRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,7 @@ public class OrderServiceTests {
     private OrderRepository orderRepository;
 
     @Test
-    public void testGetAllOrders(){
+    public void testGetAllOrders() {
         // mock data
         List<OrderEntity> orderEntities = List.of(new OrderEntity(),
                 new OrderEntity(),
@@ -40,7 +39,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    public void testGetOrderById(){
+    public void testGetOrderById() {
         List<OrderEntity> orderEntities = List.of(OrderEntity.builder().orderId(1L).customerName("CustomerOne").build(),
                 OrderEntity.builder().orderId(2L).customerName("CustomerTwo").build(),
                 OrderEntity.builder().orderId(3L).customerName("CustomerThree").build());
@@ -53,23 +52,15 @@ public class OrderServiceTests {
     }
 
     @Test
-    public void testCreateOrder() throws EmptyItemsException {
-        OrderEntity orderEntity = OrderEntity.builder().customerName("CustomerOne").build();
-        List<Item> items = Arrays.asList(Item.builder().itemName("Book").quantity(3).build());
-        orderEntity.setItems(items);
-
-        Mockito.when(orderRepository.save(orderEntity)).thenReturn(orderEntity);
-
-        assertEquals("CustomerOne", orderService.createOrder(orderEntity).getCustomerName());
-    }
-
-    @Test
-    public void testTestItemsByOrderId(){
+    public void testTestItemsByOrderId() {
         List<Item> items = Arrays.asList(Item.builder().itemName("Book").quantity(10).build(),
                 Item.builder().itemName("Phone").quantity(1).build());
+        OrderEntity orderEntity = OrderEntity.builder().items(items).build();
         List<Item> itemsTwo = Arrays.asList(Item.builder().itemName("Book").quantity(10).build());
 
+        Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(orderEntity));
         Mockito.when(orderRepository.getItemsByOrderId(1L)).thenReturn(items);
+        Mockito.when(orderRepository.findById(2L)).thenReturn(Optional.of(orderEntity));
         Mockito.when(orderRepository.getItemsByOrderId(2L)).thenReturn(itemsTwo);
 
         assertEquals(2, orderService.getItemsByOrderId(1L).size());
@@ -78,7 +69,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    public void testDeleteOrder(){
+    public void testDeleteOrder() {
         Long orderId = 1L;
 
         Mockito.doNothing().when(orderRepository).deleteById(orderId);

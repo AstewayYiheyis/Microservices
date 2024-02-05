@@ -1,5 +1,7 @@
 package com.asteway.orderservice.services;
 
+import com.asteway.orderservice.dtos.ItemDTO;
+import com.asteway.orderservice.dtos.OrderDTO;
 import com.asteway.orderservice.entities.Item;
 import com.asteway.orderservice.entities.OrderEntity;
 import com.asteway.orderservice.exceptions.EmptyItemsException;
@@ -7,7 +9,10 @@ import com.asteway.orderservice.exceptions.OrderNotFoundException;
 import com.asteway.orderservice.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.asteway.orderservice.utils.OrderConverter.*;
 
 @Service
 public class OrderService {
@@ -17,40 +22,66 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public List<OrderEntity> getAllOrders(){
-        return orderRepository.findAll();
+    public List<OrderDTO> getAllOrders(){
+        final List<OrderDTO> orderDTOs = new ArrayList<>();
+
+        for(OrderEntity orderEntity:orderRepository.findAll()){
+            orderDTOs.add(getOrderDTO(orderEntity));
+        }
+
+        return orderDTOs;
     }
 
-    public OrderEntity getOrderById(Long id){
-        return orderRepository.findById(id).get();
+    public OrderDTO getOrderById(Long id){
+        if(!orderIsPresent(id)){
+            throw new OrderNotFoundException("There is no Order with the provided ID!");
+        }
+
+        return getOrderDTO(orderRepository.findById(id).get());
     }
 
-    public OrderEntity createOrder(OrderEntity order) throws EmptyItemsException{
-        if(order.getItems() != null){
-            for(Item item : order.getItems()){
-                item.setOrder(order);
+    public boolean orderIsPresent(Long id){
+        return orderRepository.findById(id).isPresent();
+    }
+
+    public OrderDTO createOrder(OrderDTO orderDTO) throws EmptyItemsException{
+        OrderEntity orderEntity = getOrderFromDTO(orderDTO);
+
+        if(orderDTO.getItems() != null){
+            for(Item item : orderDTO.getItems()){
+                item.setOrder(orderEntity);
             }
         }
         else{
             throw new EmptyItemsException("Order created with no items!");
         }
 
-        return orderRepository.save(order);
+        return getOrderDTO(orderRepository.save(orderEntity));
     }
 
     public void deleteOrder(Long id){
         orderRepository.deleteById(id);
     }
 
-    public List<Item> getItemsByOrderId(Long id) {
-        return orderRepository.getItemsByOrderId(id);
+    public List<ItemDTO> getItemsByOrderId(Long id) {
+        final List<ItemDTO> itemDTOs = new ArrayList<>();
+
+        if(orderIsPresent(id)) {
+            for(Item item:orderRepository.getItemsByOrderId(id)){
+                itemDTOs.add(getItemDTO(item));
+            }
+            return itemDTOs;
+        }
+        else{
+            throw new OrderNotFoundException("Order not found for id: " + id);
+        }
     }
 
-    public OrderEntity getOrderByTrackingNumber(String trackingNumber){
+    public OrderDTO getOrderByTrackingNumber(String trackingNumber){
         OrderEntity order = orderRepository.getOrderByTrackingNumber(trackingNumber);
 
         if (order != null) {
-            return order;
+            return getOrderDTO(order);
         } else {
             throw new OrderNotFoundException("Order not found for tracking number: " + trackingNumber);
         }
