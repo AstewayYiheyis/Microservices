@@ -1,6 +1,6 @@
 package com.asteway.inventory_management_service.controllers;
 
-import com.asteway.inventory_management_service.entities.Item;
+import com.asteway.inventory_management_service.dtos.ItemDTO;
 import com.asteway.inventory_management_service.exceptions.ItemNotFoundException;
 import com.asteway.inventory_management_service.services.InventoryService;
 import org.springframework.http.HttpStatus;
@@ -19,23 +19,23 @@ public class InventoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Item>> getItems(){
+    public ResponseEntity<List<ItemDTO>> getItems(){
         return new ResponseEntity<>(inventoryService.getItems(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable String id) throws ItemNotFoundException {
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable String id) throws ItemNotFoundException {
         return new ResponseEntity<>(inventoryService.getItemById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Item> addItem(@RequestBody Item item) {
-        return new ResponseEntity<>(inventoryService.addItem(item), HttpStatus.OK);
+    public ResponseEntity<ItemDTO> addItem(@RequestBody ItemDTO itemDTO) {
+        return new ResponseEntity<>(inventoryService.addItem(itemDTO), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Item> updateItem(@RequestBody Item item, String id) throws ItemNotFoundException {
-        return new ResponseEntity<>(inventoryService.updateItem(id, item), HttpStatus.OK);
+    public ResponseEntity<ItemDTO> updateItem(@RequestBody ItemDTO itemDTO, @PathVariable String id) throws ItemNotFoundException {
+        return new ResponseEntity<>(inventoryService.updateItem(id, itemDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
