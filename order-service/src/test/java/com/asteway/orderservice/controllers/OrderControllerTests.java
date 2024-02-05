@@ -50,11 +50,11 @@ public class OrderControllerTests {
         Mockito.when(orderService.getOrderById(1L)).thenReturn(orders.get(0));
         Mockito.when(orderService.getOrderById(2L)).thenReturn(orders.get(1));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/orders/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customerName").value("CustomerOne"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/orders/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders/{id}", 2))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customerName").value("CustomerTwo"));
     }
