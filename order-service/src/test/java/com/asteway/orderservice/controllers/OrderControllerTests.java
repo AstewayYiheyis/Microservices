@@ -1,5 +1,6 @@
 package com.asteway.orderservice.controllers;
 
+import com.asteway.orderservice.dtos.OrderDTO;
 import com.asteway.orderservice.entities.OrderEntity;
 import com.asteway.orderservice.exceptions.EmptyItemsException;
 import com.asteway.orderservice.services.OrderService;
@@ -25,14 +26,13 @@ import java.util.List;
 public class OrderControllerTests {
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private OrderService orderService;
 
     @Test
     public void testGetAllOrders() throws Exception{
-        List<OrderEntity> orders = Arrays.asList(new OrderEntity(), new OrderEntity());
-
-        Mockito.when(orderService.getAllOrders()).thenReturn(orders);
+        Mockito.when(orderService.getAllOrders()).thenReturn(getSampleOrderDTOs());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -41,14 +41,8 @@ public class OrderControllerTests {
 
     @Test
     public void testGetOrderById() throws Exception {
-        OrderEntity orderEntity1 = OrderEntity.builder().orderId(1L).customerName("CustomerOne").build();
-        OrderEntity orderEntity2 = OrderEntity.builder().orderId(2L).customerName("CustomerTwo").build();
-
-        List<OrderEntity> orders = Arrays.asList(orderEntity1,
-        orderEntity2);
-
-        Mockito.when(orderService.getOrderById(1L)).thenReturn(orders.get(0));
-        Mockito.when(orderService.getOrderById(2L)).thenReturn(orders.get(1));
+        Mockito.when(orderService.getOrderById(1L)).thenReturn(getSampleOrderDTOs().get(0));
+        Mockito.when(orderService.getOrderById(2L)).thenReturn(getSampleOrderDTOs().get(1));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/orders/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -61,15 +55,25 @@ public class OrderControllerTests {
 
     @Test
     public void testCreateOrder() throws Exception, EmptyItemsException {
-        OrderEntity orderEntity = OrderEntity.builder().customerName("John Doe").build();
+        OrderDTO orderDTO = OrderDTO.builder().customerName("John Doe").build();
 
-        Mockito.when(orderService.createOrder(orderEntity)).thenReturn(orderEntity);
+        Mockito.when(orderService.createOrder(orderDTO)).thenReturn(orderDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")
                                               .contentType(MediaType.APPLICATION_JSON)
-                                              .content(asJsonString(orderEntity)))
+                                              .content(asJsonString(orderDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customerName").value("John Doe"));
+    }
+
+    public List<OrderDTO> getSampleOrderDTOs(){
+        OrderDTO orderDTO1 = OrderDTO.builder().customerName("CustomerOne").build();
+        OrderDTO orderDTO2 = OrderDTO.builder().customerName("CustomerTwo").build();
+
+        List<OrderDTO> orderDTOs= Arrays.asList(orderDTO1,
+                orderDTO2);
+
+        return orderDTOs;
     }
 
     public String asJsonString(final Object obj) throws JsonProcessingException {

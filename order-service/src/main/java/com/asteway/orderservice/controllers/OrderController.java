@@ -1,5 +1,7 @@
 package com.asteway.orderservice.controllers;
 
+import com.asteway.orderservice.dtos.ItemDTO;
+import com.asteway.orderservice.dtos.OrderDTO;
 import com.asteway.orderservice.entities.Item;
 import com.asteway.orderservice.entities.OrderEntity;
 import com.asteway.orderservice.exceptions.EmptyItemsException;
@@ -20,23 +22,23 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderEntity>> getAllOrders(){
+    public ResponseEntity<List<OrderDTO>> getAllOrders(){
         return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id){
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id){
         return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/items")
-    public ResponseEntity<List<Item>> getItemsByOrderId(@PathVariable Long id){
+    public ResponseEntity<List<ItemDTO>> getItemsByOrderId(@PathVariable Long id){
         return new ResponseEntity<>(orderService.getItemsByOrderId(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderEntity order) throws EmptyItemsException {
-        return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) throws EmptyItemsException {
+        return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -46,7 +48,7 @@ public class OrderController {
     }
 
     @GetMapping("/tracking/{trackingNumber}")
-    public ResponseEntity<OrderEntity> getOrderByTrackingNumber(@PathVariable String trackingNumber) {
+    public ResponseEntity<OrderDTO> getOrderByTrackingNumber(@PathVariable String trackingNumber) {
         return new ResponseEntity<>(orderService.getOrderByTrackingNumber(trackingNumber), HttpStatus.OK);
     }
 }
