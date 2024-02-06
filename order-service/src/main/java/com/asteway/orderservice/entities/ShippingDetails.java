@@ -21,10 +21,10 @@ public class ShippingDetails {
     private String trackingNumber;
 
     public ShippingDetails(){
-        this.trackingNumber = generateTrckingNumber();
+        this.trackingNumber = generateTrackingNumber();
     }
 
-    private String generateTrckingNumber() {
+    private String generateTrackingNumber() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 12);
     }
 }
