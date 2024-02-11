@@ -23,8 +23,9 @@ public class PaymentServiceImpl implements PaymentService{
     private PaymentRepository paymentRepository;
     private InvoiceService invoiceService;
 
-    public PaymentServiceImpl( PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, InvoiceService invoiceService) {
         this.paymentRepository = paymentRepository;
+        this.invoiceService = invoiceService;
     }
 
     @Override
