@@ -10,6 +10,7 @@ import com.stripe.model.Charge;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class PaymentServiceImpl implements PaymentService{
     private String stripeApiKey;
 
     private PaymentRepository paymentRepository;
+    private InvoiceService invoiceService;
 
     public PaymentServiceImpl( PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
@@ -53,12 +55,14 @@ public class PaymentServiceImpl implements PaymentService{
                 responseDTO.setId(paymentEntity.getId());
                 responseDTO.setAmount(paymentEntity.getAmount());
                 responseDTO.setStatus(paymentEntity.getStatus());
+                invoiceService.generateInvoice(paymentEntity.getId());
+
                 return responseDTO;
             } else {
                 // Payment failed or was not completed
                 throw new RuntimeException("Payment was not successful. Status: " + charge.getStatus());
             }
-        } catch (StripeException e) {
+        } catch (StripeException | IOException e) {
             // Handle Stripe processing errors
             throw new RuntimeException("Error processing payment: " + e.getMessage());
         }
