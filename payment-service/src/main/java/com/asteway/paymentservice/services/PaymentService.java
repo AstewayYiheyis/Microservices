@@ -5,4 +5,5 @@ import com.asteway.paymentservice.dtos.PaymentResponseDTO;
 
 public interface PaymentService {
     PaymentResponseDTO processPayment(PaymentRequestDTO paymentRequestDTO);
+    void validatePaymentRequest(PaymentRequestDTO paymentRequestDTO);
 }

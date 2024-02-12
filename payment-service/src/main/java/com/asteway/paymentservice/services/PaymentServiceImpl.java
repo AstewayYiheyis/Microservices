@@ -23,8 +23,9 @@ public class PaymentServiceImpl implements PaymentService{
     private PaymentRepository paymentRepository;
     private InvoiceService invoiceService;
 
-    public PaymentServiceImpl( PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, InvoiceService invoiceService) {
         this.paymentRepository = paymentRepository;
+        this.invoiceService = invoiceService;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService{
 
                 // Generate payment response
                 PaymentResponseDTO responseDTO = new PaymentResponseDTO();
-                responseDTO.setId(paymentEntity.getId());
+                responseDTO.setPaymentId(paymentEntity.getId());
                 responseDTO.setAmount(paymentEntity.getAmount());
                 responseDTO.setStatus(paymentEntity.getStatus());
                 invoiceService.generateInvoice(paymentEntity.getId());
@@ -68,7 +69,7 @@ public class PaymentServiceImpl implements PaymentService{
         }
     }
 
-    private void validatePaymentRequest(PaymentRequestDTO paymentRequestDTO) {
+    public void validatePaymentRequest(PaymentRequestDTO paymentRequestDTO) {
         if(paymentRequestDTO.getAmount().compareTo(BigDecimal.ZERO) <= 0){
             throw new IllegalArgumentException("Payment amount must be greater than zero.");
         }

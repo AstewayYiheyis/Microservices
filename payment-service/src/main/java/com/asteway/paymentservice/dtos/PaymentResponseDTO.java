@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class PaymentResponseDTO {
-    private Long id;
+    private Long paymentId;
     private BigDecimal amount;
+    // used string instead of an enum to avoid updating the enum each time there is an update to Stripe response status
     private String status;
 }
