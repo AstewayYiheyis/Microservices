@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 public class OrderDTO {
     private String customerName;
+    private String email;
     private List<Item> items;
     private Status status;
     private ShippingDetails shippingDetails;

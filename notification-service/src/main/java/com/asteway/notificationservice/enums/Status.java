@@ -1,4 +1,4 @@
-package com.asteway.orderservice.enums;
+package com.asteway.notificationservice.enums;
 
 public enum Status {
     CREATED,
