@@ -49,3 +49,14 @@ payment-service/.mvn/wrapper/maven-wrapper.jar
 payment-service/.mvn/wrapper/maven-wrapper.jar
 payment-service/.mvn/wrapper/maven-wrapper.jar
 payment-service/.mvn/wrapper/maven-wrapper.jar
+inventory_management_service/.idea/inventory_management_service.iml
+payment-service/.mvn/wrapper/maven-wrapper.jar
+payment-service/.mvn/wrapper/maven-wrapper.jar
+*.jar
+payment-service/.mvn/wrapper/maven-wrapper.jar
+payment-service/.mvn/wrapper/maven-wrapper.jar
+notification-service/.mvn/wrapper/maven-wrapper.jar
+notification-service/.mvn/wrapper/maven-wrapper.properties
+notification-service/.mvn/wrapper/maven-wrapper.jar
+notification-service/mvnw
+notification-service/mvnw.cmd
