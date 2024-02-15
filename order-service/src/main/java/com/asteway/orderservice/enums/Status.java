@@ -1,7 +1,7 @@
 package com.asteway.orderservice.enums;
 
 public enum Status {
-    PENDING,
+    CREATED,
     PROCESSING,
     SHIPPED,
     DELIVERED,

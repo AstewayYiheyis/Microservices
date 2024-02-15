@@ -23,6 +23,8 @@ public class OrderEntity {
 
     private String customerName;
 
+    private String email;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Item> items;

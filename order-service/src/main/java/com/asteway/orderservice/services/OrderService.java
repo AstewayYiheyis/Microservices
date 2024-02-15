@@ -6,7 +6,11 @@ import com.asteway.orderservice.entities.Item;
 import com.asteway.orderservice.entities.OrderEntity;
 import com.asteway.orderservice.exceptions.EmptyItemsException;
 import com.asteway.orderservice.exceptions.OrderNotFoundException;
+import com.asteway.orderservice.models.OrderEvent;
 import com.asteway.orderservice.repositories.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +20,21 @@ import static com.asteway.orderservice.utils.OrderConverter.*;
 
 @Service
 public class OrderService {
+
     private OrderRepository orderRepository;
 
-    OrderService(final OrderRepository orderRepository){
+    private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
+
+    @Value("${kafka.notification.topic}")
+    private String notificationTopic;
+
+    OrderService(final OrderRepository orderRepository, KafkaTemplate<String, OrderEvent> kafkaTemplate){
         this.orderRepository = orderRepository;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void sendOrderEvent(OrderEvent orderEvent) {
+        kafkaTemplate.send(notificationTopic, orderEvent);
     }
 
     public List<OrderDTO> getAllOrders(){
@@ -55,6 +70,8 @@ public class OrderService {
         else{
             throw new EmptyItemsException("Order created with no items!");
         }
+        OrderEntity order = orderRepository.save(orderEntity);
+        sendOrderEvent(OrderEvent.builder().email(order.getEmail()).status(order.getStatus()).build());
 
         return getOrderDTO(orderRepository.save(orderEntity));
     }
