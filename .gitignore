@@ -60,3 +60,5 @@ notification-service/.mvn/wrapper/maven-wrapper.properties
 notification-service/.mvn/wrapper/maven-wrapper.jar
 notification-service/mvnw
 notification-service/mvnw.cmd
+eureka-server/.mvn/wrapper/maven-wrapper.jar
+eureka-server/.mvn/wrapper/maven-wrapper.properties
